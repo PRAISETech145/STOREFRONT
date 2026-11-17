@@ -6,6 +6,8 @@ class Product(models.Model):
     price=models.DecimalField(max_digits=6,decimal_places=2)
     inventory=models.IntegerField()
     last_update=models.DateTimeField(auto_now=True)
+    collections=models.ForeignKey('Collections',on_delete=models.PROTECT)
+    promotions=models.ManyToManyField('Promotion')
 
 class Customer(models.Model):
     MEMBERSHIP=[
@@ -18,7 +20,8 @@ class Customer(models.Model):
     email=models.EmailField(unique=True)
     phone=models.CharField()
     birthdate=models.DateField(blank=True) 
-    membership=models.CharField(max_length=1,choices=MEMBERSHIP,default="S")  
+    membership=models.CharField(max_length=1,choices=MEMBERSHIP,default="S")
+    
 
 class Order(models.Model):
     PAYMENT_STATUS=[
@@ -28,4 +31,33 @@ class Order(models.Model):
     ]
     place_at=models.DateTimeField(auto_now_add=True)
     payment_status=models.CharField(max_length=1,choices=PAYMENT_STATUS,default='P')
+    item=models.ForeignKey('OrderItem',on_delete=models.CASCADE,related_name="+")
+    customer=models.ForeignKey(Customer,on_delete=models.PROTECT)
+
+class Address(models.Model):
+    customer=models.OneToOneField(Customer,on_delete=models.CASCADE)
+    street=models.CharField(max_length=250)
+    city=models.CharField(max_length=200)
+
+class Collections(models.Model):
+    title=models.CharField(max_length=100)
+    feature_product=models.ForeignKey(Product,on_delete=models.SET_NULL,null=True,related_name="+")
+
+class OrderItem(models.Model):
+    order=models.ForeignKey(Order,on_delete=models.PROTECT)
+    product=models.ForeignKey(Product,on_delete=models.PROTECT)
+    quantity=models.PositiveSmallIntegerField()
+    unit_price=models.DecimalField(max_digits=6,decimal_places=2)
+class Cart(models.Model):
+      created_at=models.DateTimeField(auto_now_add=True)
+
+class CartItem(models.Model):
+    cart=models.ForeignKey(Cart,on_delete=models.CASCADE)
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)   
+    quantity=models.PositiveSmallIntegerField()
+
+class Promotion(models.Model):
+    description=models.CharField(max_length=300)
+    discount=models.FloatField()    
+      
 
