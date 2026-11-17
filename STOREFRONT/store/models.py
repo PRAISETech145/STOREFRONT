@@ -8,6 +8,7 @@ class Product(models.Model):
     last_update=models.DateTimeField(auto_now=True)
     collections=models.ForeignKey('Collections',on_delete=models.PROTECT)
     promotions=models.ManyToManyField('Promotion')
+    slug=models.SlugField(null=True)
 
 class Customer(models.Model):
     MEMBERSHIP=[
