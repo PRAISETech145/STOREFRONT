@@ -19,7 +19,7 @@ class Customer(models.Model):
     first_name=models.CharField(max_length=150)
     last_name=models.CharField(max_length=150)
     email=models.EmailField(unique=True)
-    phone=models.CharField()
+    phone=models.CharField(max_length=13)
     birthdate=models.DateField(blank=True) 
     membership=models.CharField(max_length=1,choices=MEMBERSHIP,default="S")
     
